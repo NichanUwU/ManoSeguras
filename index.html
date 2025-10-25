@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ManoSeguras - Conectando servicios de confianza en Chiapas</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #10b981;
+            --accent: #f59e0b;
+            --light: #f8fafc;
+            --dark: #1e293b;
+            --gray: #64748b;
+            --light-gray: #e2e8f0;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        
+        body {
+            background-color: #ffffff;
+            color: var(--dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        /* Header */
+        header {
+            background-color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 20px;
+        }
+        
+        .logo-text {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .logo-text span {
+            color: var(--secondary);
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+        
+        nav ul li a {
+            color: var(--dark);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            position: relative;
+        }
+        
+        nav ul li a:hover {
+            color: var(--primary);
+        }
+        
+        nav ul li a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--primary);
+            transition: width 0.3s;
+        }
+        
+        nav ul li a:hover::after {
+            width: 100%;
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: var(--primary);
+            color: white;
+            padding: 0.7rem 1.8rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        
+        .btn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+        
+        .btn-secondary {
+            background-color: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+        
+        .btn-secondary:hover {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            color: white;
+            padding: 5rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" preserveAspectRatio="none"><path fill="%23ffffff" fill-opacity="0.05" d="M0,0 L1000,0 L1000,1000 L0,1000 Z M0,0 Q500,200 1000,0 L1000,1000 L0,1000 Z"></path></svg>');
+            background-size: cover;
+        }
+        
+        .hero-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .hero-text {
+            flex: 1;
+            max-width: 600px;
+        }
+        
+        .hero-image {
+            flex: 1;
+            display: flex;
+            justify-content: flex-end;
+        }
+        
+        .hero-image-placeholder {
+            width: 100%;
+            max-width: 500px;
+            height: 350px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+        
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .hero-buttons .btn {
+            background-color: white;
+            color: var(--primary);
+        }
+        
+        .hero-buttons .btn:hover {
+            background-color: var(--light);
+            transform: translateY(-2px);
+        }
+        
+        .hero-buttons .btn-secondary {
+            background-color: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+        
+        .hero-buttons .btn-secondary:hover {
+            background-color: white;
+            color: var(--primary);
+        }
+        
+        /* Features */
+        .features {
+            padding: 5rem 0;
+            background-color: var(--light);
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .section-title h2 {
+            font-size: 2.5rem;
+            color: var(--dark);
+            margin-bottom: 1rem;
+        }
+        
+        .section-title p {
+            font-size: 1.1rem;
+            color: var(--gray);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .feature-card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 2.5rem 2rem;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid var(--light-gray);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            color: white;
+            font-size: 2rem;
+        }
+        
+        .feature-card h3 {
+            margin-bottom: 1rem;
+            color: var(--dark);
+            font-size: 1.5rem;
+        }
+        
+        /* How it Works */
+        .how-it-works {
+            padding: 5rem 0;
+            background-color: white;
+        }
+        
+        .steps {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-top: 3rem;
+            position: relative;
+        }
+        
+        .steps::before {
+            content: '';
+            position: absolute;
+            top: 40px;
+            left: 10%;
+            right: 10%;
+            height: 3px;
+            background: var(--light-gray);
+            z-index: 1;
+        }
+        
+        .step {
+            flex: 1;
+            min-width: 220px;
+            text-align: center;
+            padding: 0 1rem;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .step-number {
+            display: inline-flex;
+            width: 80px;
+            height: 80px;
+            background-color: var(--primary);
+            color: white;
+            border-radius: 50%;
+            line-height: 80px;
+            margin-bottom: 1.5rem;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
+        }
+        
+        .step h3 {
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+        
+        /* Services Preview */
+        .services-preview {
+            padding: 5rem 0;
+            background-color: var(--light);
+        }
+        
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+        
+        .service-card {
+            background-color: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        
+        .service-image {
+            height: 180px;
+            background-color: var(--light-gray);
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .service-info {
+            padding: 1.5rem;
+        }
+        
+        .service-category {
+            color: var(--primary);
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .service-title {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+        
+        .service-provider {
+            color: var(--gray);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .service-provider::before {
+            content: '👤';
+        }
+        
+        .service-rating {
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        /* CTA */
+        .cta {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 5rem 0;
+            text-align: center;
+            border-radius: 0;
+        }
+        
+        .cta h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .cta p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 2.5rem;
+            opacity: 0.9;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 4rem 0 2rem;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+        
+        .footer-column h3 {
+            margin-bottom: 1.5rem;
+            color: var(--accent);
+            font-size: 1.3rem;
+        }
+        
+        .footer-column p {
+            color: #cbd5e1;
+            margin-bottom: 1.5rem;
+        }
+        
+        .footer-column ul {
+            list-style: none;
+        }
+        
+        .footer-column ul li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .footer-column ul li a {
+            color: #cbd5e1;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-column ul li a:hover {
+            color: var(--accent);
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .social-links a {
+            display: inline-flex;
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        
+        .social-links a:hover {
+            background: var(--primary);
+            transform: translateY(-3px);
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid #334155;
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+        
+        /* Responsive */
+        @media (max-width: 968px) {
+            .hero-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .hero-text {
+                margin-bottom: 3rem;
+            }
+            
+            .hero-buttons {
+                justify-content: center;
+            }
+            
+            .steps::before {
+                display: none;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            nav ul {
+                gap: 1rem;
+            }
+            
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+            
+            .section-title h2 {
+                font-size: 2rem;
+            }
+            
+            .steps {
+                flex-direction: column;
+                gap: 2rem;
+            }
+        }
+        
+        /* Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon">MS</div>
+                    <div class="logo-text">Mano<span>Seguras</span></div>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="#inicio">Inicio</a></li>
+                        <li><a href="#como-funciona">Cómo funciona</a></li>
+                        <li><a href="#servicios">Servicios</a></li>
+                        <li><a href="#contacto">Contacto</a></li>
+                    </ul>
+                </nav>
+                <a href="#" class="btn">Registrarse</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="inicio">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-text fade-in">
+                    <h1>Servicios de confianza en Villaflores y todo Chiapas</h1>
+                    <p>Conectamos a personas que ofrecen servicios con quienes los necesitan. Encuentra o ofrece servicios de forma segura y confiable.</p>
+                    <div class="hero-buttons">
+                        <a href="#" class="btn">Buscar Servicios</a>
+                        <a href="#" class="btn btn-secondary">Ofrecer Servicios</a>
+                    </div>
+                </div>
+                <div class="hero-image fade-in">
+                    <div class="hero-image-placeholder">
+                        <div style="text-align: center; padding: 2rem;">
+                            <div style="font-size: 3rem; margin-bottom: 1rem;">🤝</div>
+                            <h3 style="color: white; margin-bottom: 0.5rem;">ManoSeguras</h3>
+                            <p style="color: rgba(255,255,255,0.8);">Conexiones confiables</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section class="features">
+        <div class="container">
+            <div class="section-title">
+                <h2>¿Por qué elegir ManoSeguras?</h2>
+                <p>Una plataforma diseñada específicamente para las necesidades de Villaflores y comunidades de Chiapas</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">🔒</div>
+                    <h3>Confianza y Seguridad</h3>
+                    <p>Perfiles verificados y sistema de valoraciones para garantizar servicios confiables.</p>
+                </div>
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">📍</div>
+                    <h3>Enfocado en lo Local</h3>
+                    <p>Diseñado específicamente para Villaflores y comunidades de Chiapas, entendiendo sus necesidades.</p>
+                </div>
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">💸</div>
+                    <h3>Completamente Gratuito</h3>
+                    <p>Publica y busca servicios sin costo alguno. Creemos en apoyar a nuestra comunidad.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How it Works -->
+    <section class="how-it-works" id="como-funciona">
+        <div class="container">
+            <div class="section-title">
+                <h2>¿Cómo funciona ManoSeguras?</h2>
+                <p>En solo 4 sencillos pasos puedes empezar a ofrecer o encontrar servicios</p>
+            </div>
+            <div class="steps">
+                <div class="step fade-in">
+                    <div class="step-number">1</div>
+                    <h3>Regístrate</h3>
+                    <p>Crea tu cuenta en minutos, elige si eres proveedor o buscador de servicios.</p>
+                </div>
+                <div class="step fade-in">
+                    <div class="step-number">2</div>
+                    <h3>Completa tu Perfil</h3>
+                    <p>Si eres proveedor, describe tus servicios, experiencia y añade fotos de tu trabajo.</p>
+                </div>
+                <div class="step fade-in">
+                    <div class="step-number">3</div>
+                    <h3>Conecta</h3>
+                    <p>Busca servicios o recibe solicitudes. Chatea directamente para acordar detalles.</p>
+                </div>
+                <div class="step fade-in">
+                    <div class="step-number">4</div>
+                    <h3>Realiza el Servicio</h3>
+                    <p>Concreta el acuerdo y realiza el servicio. Después, deja una valoración.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Preview -->
+    <section class="services-preview" id="servicios">
+        <div class="container">
+            <div class="section-title">
+                <h2>Servicios Populares en tu Área</h2>
+                <p>Descubre algunos de los servicios más solicitados en Villaflores y comunidades cercanas</p>
+            </div>
+            <div class="services-grid">
+                <div class="service-card fade-in">
+                    <div class="service-image" style="background-image: url('https://source.unsplash.com/random/400x300/?plumbing')"></div>
+                    <div class="service-info">
+                        <div class="service-category">Fontanería</div>
+                        <h3 class="service-title">Reparación de tuberías y fugas</h3>
+                        <div class="service-provider">Juan Pérez</div>
+                        <div class="service-rating">★★★★☆ (4.2)</div>
+                    </div>
+                </div>
+                <div class="service-card fade-in">
+                    <div class="service-image" style="background-image: url('https://source.unsplash.com/random/400x300/?electrician')"></div>
+                    <div class="service-info">
+                        <div class="service-category">Electricidad</div>
+                        <h3 class="service-title">Instalaciones eléctricas residenciales</h3>
+                        <div class="service-provider">María González</div>
+                        <div class="service-rating">★★★★★ (4.8)</div>
+                    </div>
+                </div>
+                <div class="service-card fade-in">
+                    <div class="service-image" style="background-image: url('https://source.unsplash.com/random/400x300/?tutoring')"></div>
+                    <div class="service-info">
+                        <div class="service-category">Educación</div>
+                        <h3 class="service-title">Clases de matemáticas para secundaria</h3>
+                        <div class="service-provider">Carlos Rodríguez</div>
+                        <div class="service-rating">★★★★☆ (4.5)</div>
+                    </div>
+                </div>
+            </div>
+            <div style="text-align: center; margin-top: 3rem;">
+                <a href="#" class="btn">Ver Todos los Servicios</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta">
+        <div class="container">
+            <h2 class="fade-in">¿Listo para unirte a ManoSeguras?</h2>
+            <p class="fade-in">Regístrate hoy y comienza a conectar con tu comunidad. Publica tus servicios o encuentra lo que necesitas.</p>
+            <a href="#" class="btn" style="background-color: white; color: var(--primary);">Crear Cuenta Gratis</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contacto">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>ManoSeguras</h3>
+                    <p>Conectando servicios de confianza en Villaflores, Chiapas y comunidades aledañas.</p>
+                    <div class="social-links">
+                        <a href="#">FB</a>
+                        <a href="#">IG</a>
+                        <a href="#">TW</a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h3>Enlaces Rápidos</h3>
+                    <ul>
+                        <li><a href="#inicio">Inicio</a></li>
+                        <li><a href="#como-funciona">Cómo funciona</a></li>
+                        <li><a href="#servicios">Servicios</a></li>
+                        <li><a href="#">Registrarse</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Contacto</h3>
+                    <ul>
+                        <li>Email: info@manoseguras.com</li>
+                        <li>Tel: (961) 123-4567</li>
+                        <li>Villaflores, Chiapas</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                &copy; 2023 ManoSeguras. Todos los derechos reservados.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Simple animation on scroll
+        document.addEventListener('DOMContentLoaded', function() {
+            const fadeElements = document.querySelectorAll('.fade-in');
+            
+            const fadeInOnScroll = function() {
+                fadeElements.forEach(element => {
+                    const elementTop = element.getBoundingClientRect().top;
+                    const elementVisible = 150;
+                    
+                    if (elementTop < window.innerHeight - elementVisible) {
+                        element.classList.add('fade-in');
+                    }
+                });
+            };
+            
+            // Check on load
+            fadeInOnScroll();
+            
+            // Check on scroll
+            window.addEventListener('scroll', fadeInOnScroll);
+        });
+    </script>
+</body>
+</html>
