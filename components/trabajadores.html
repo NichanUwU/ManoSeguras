@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trabajadores Registrados - ManoSeguras</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/components.css">
+    <style>
+        .workers-hero {
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%);
+            color: white;
+            padding: 3rem 0;
+            text-align: center;
+        }
+
+        .filters-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            margin: -50px auto 2rem;
+            position: relative;
+            z-index: 2;
+            max-width: 1200px;
+        }
+
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            align-items: end;
+        }
+
+        .workers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .worker-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .worker-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .worker-header {
+            padding: 1.5rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            text-align: center;
+        }
+
+        .worker-avatar {
+            width: 80px;
+            height: 80px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        .worker-name {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .worker-rating {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .worker-body {
+            padding: 1.5rem;
+        }
+
+        .worker-services {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .service-tag {
+            background: var(--light);
+            color: var(--primary);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .worker-info {
+            margin-bottom: 1rem;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .worker-description {
+            color: var(--dark);
+            line-height: 1.5;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .worker-footer {
+            padding: 1rem 1.5rem;
+            background: var(--light);
+            border-top: 1px solid var(--light-gray);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .no-workers {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--gray);
+        }
+
+        .no-workers-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .stats-bar {
+            display: flex;
+            justify-content: space-around;
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 2rem;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary);
+            display: block;
+        }
+
+        .stat-label {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .workers-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .filters-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .filters-section {
+                margin-top: -30px;
+                padding: 1.5rem;
+            }
+            
+            .stats-bar {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div id="header"></div>
+
+    <!-- Hero Section -->
+    <section class="workers-hero">
+        <div class="container">
+            <h1>Trabajadores de Confianza</h1>
+            <p>Encuentra profesionales verificados en Villaflores y comunidades cercanas</p>
+        </div>
+    </section>
+
+    <div class="container">
+        <!-- Filtros -->
+        <section class="filters-section">
+            <div class="filters-grid">
+                <div class="form-group">
+                    <label class="form-label" for="filterService">Servicio</label>
+                    <select id="filterService" class="form-select">
+                        <option value="">Todos los servicios</option>
+                        <option value="fontaneria">Fontanería</option>
+                        <option value="electricidad">Electricidad</option>
+                        <option value="carpinteria">Carpintería</option>
+                        <option value="albanileria">Albañilería</option>
+                        <option value="jardineria">Jardinería</option>
+                        <option value="limpieza">Limpieza</option>
+                        <option value="clases">Clases particulares</option>
+                        <option value="reparaciones">Reparaciones generales</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="filterExperience">Experiencia</label>
+                    <select id="filterExperience" class="form-select">
+                        <option value="">Cualquier experiencia</option>
+                        <option value="menos-1">Menos de 1 año</option>
+                        <option value="1-3">1-3 años</option>
+                        <option value="3-5">3-5 años</option>
+                        <option value="5-10">5-10 años</option>
+                        <option value="mas-10">Más de 10 años</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="filterRating">Valoración mínima</label>
+                    <select id="filterRating" class="form-select">
+                        <option value="0">Cualquier valoración</option>
+                        <option value="3">3 estrellas +</option>
+                        <option value="4">4 estrellas +</option>
+                        <option value="5">5 estrellas</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">&nbsp;</label>
+                    <button class="btn" onclick="applyFilters()" style="width: 100%;">Aplicar Filtros</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Estadísticas -->
+        <div class="stats-bar">
+            <div class="stat-item">
+                <span class="stat-number" id="totalWorkers">0</span>
+                <span class="stat-label">Trabajadores</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number" id="averageRating">0</span>
+                <span class="stat-label">Valoración promedio</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number" id="totalServices">0</span>
+                <span class="stat-label">Servicios ofrecidos</span>
+            </div>
+        </div>
+
+        <!-- Lista de Trabajadores -->
+        <div id="workersList" class="workers-grid">
+            <!-- Los trabajadores se cargarán aquí dinámicamente -->
+        </div>
+
+        <!-- Mensaje cuando no hay trabajadores -->
+        <div id="noWorkersMessage" class="no-workers" style="display: none;">
+            <div class="no-workers-icon">👷‍♂️</div>
+            <h3>No hay trabajadores registrados</h3>
+            <p>¡Sé el primero en registrarte y ofrece tus servicios a la comunidad!</p>
+            <a href="registro.html" class="btn" style="margin-top: 1rem;">Registrarme como Trabajador</a>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div id="footer"></div>
+
+    <script src="js/main.js"></script>
+    <script>
+        // Datos de ejemplo para probar (se pueden eliminar después)
+        const sampleWorkers = [
+            {
+                id: 1,
+                nombre: "Juan Pérez",
+                telefono: "9611234567",
+                email: "juan@email.com",
+                servicios: ["fontaneria", "reparaciones"],
+                experiencia: "5-10",
+                descripcion: "Especialista en reparación de tuberías y fugas de agua. Más de 8 años de experiencia sirviendo a la comunidad de Villaflores.",
+                horario: "Lunes a Sábado 7:00 - 19:00",
+                radio: "10",
+                fechaRegistro: "2023-10-15",
+                valoracion: 4.5,
+                trabajosRealizados: 47
+            },
+            {
+                id: 2,
+                nombre: "María González",
+                telefono: "9619876543",
+                email: "maria@email.com",
+                servicios: ["electricidad", "reparaciones"],
+                experiencia: "3-5",
+                descripcion: "Electricista certificada con experiencia en instalaciones residenciales y reparación de cortocircuitos.",
+                horario: "Lunes a Viernes 8:00 - 18:00",
+                radio: "15",
+                fechaRegistro: "2023-11-20",
+                valoracion: 4.8,
+                trabajosRealizados: 32
+            }
+        ];
+
+        // Inicializar datos si no existen
+        function initializeData() {
+            if (!localStorage.getItem('manoseguras_workers')) {
+                localStorage.setItem('manoseguras_workers', JSON.stringify(sampleWorkers));
+            }
+        }
+
+        // Cargar y mostrar trabajadores
+        function loadWorkers() {
+            initializeData();
+            const workers = JSON.parse(localStorage.getItem('manoseguras_workers') || '[]');
+            const workersList = document.getElementById('workersList');
+            const noWorkersMessage = document.getElementById('noWorkersMessage');
+            
+            // Actualizar estadísticas
+            updateStats(workers);
+            
+            if (workers.length === 0) {
+                workersList.style.display = 'none';
+                noWorkersMessage.style.display = 'block';
+                return;
+            }
+            
+            workersList.style.display = 'grid';
+            noWorkersMessage.style.display = 'none';
+            workersList.innerHTML = '';
+            
+            workers.forEach(worker => {
+                const workerCard = createWorkerCard(worker);
+                workersList.appendChild(workerCard);
+            });
+        }
+
+        // Crear tarjeta de trabajador
+        function createWorkerCard(worker) {
+            const card = document.createElement('div');
+            card.className = 'worker-card';
+            
+            // Obtener iniciales para el avatar
+            const initials = worker.nombre.split(' ').map(n => n[0]).join('').toUpperCase();
+            
+            // Mapear servicios a nombres legibles
+            const serviceNames = {
+                'fontaneria': 'Fontanería',
+                'electricidad': 'Electricidad',
+                'carpinteria': 'Carpintería',
+                'albanileria': 'Albañilería',
+                'jardineria': 'Jardinería',
+                'limpieza': 'Limpieza',
+                'clases': 'Clases',
+                'reparaciones': 'Reparaciones'
+            };
+            
+            card.innerHTML = `
+                <div class="worker-header">
+                    <div class="worker-avatar">${initials}</div>
+                    <div class="worker-name">${worker.nombre}</div>
+                    <div class="worker-rating">
+                        ${generateStars(worker.valoracion)}
+                        <span>(${worker.valoracion})</span>
+                    </div>
+                </div>
+                <div class="worker-body">
+                    <div class="worker-services">
+                        ${worker.servicios.map(service => 
+                            `<span class="service-tag">${serviceNames[service] || service}</span>`
+                        ).join('')}
+                    </div>
+                    <div class="worker-info">
+                        <div class="info-item">📞 ${worker.telefono}</div>
+                        <div class="info-item">⏰ ${worker.horario || 'Horario flexible'}</div>
+                        <div class="info-item">📍 Radio de ${worker.radio} km</div>
+                        <div class="info-item">⭐ ${worker.trabajosRealizados} trabajos realizados</div>
+                    </div>
+                    <div class="worker-description">${worker.descripcion}</div>
+                </div>
+                <div class="worker-footer">
+                    <span>${getExperienceText(worker.experiencia)}</span>
+                    <button class="btn" onclick="contactWorker('${worker.telefono}')">Contactar</button>
+                </div>
+            `;
+            
+            return card;
+        }
+
+        // Generar estrellas para valoración
+        function generateStars(rating) {
+            const fullStars = Math.floor(rating);
+            const halfStar = rating % 1 >= 0.5;
+            const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
+            
+            return '★'.repeat(fullStars) + (halfStar ? '½' : '') + '☆'.repeat(emptyStars);
+        }
+
+        // Obtener texto de experiencia
+        function getExperienceText(exp) {
+            const experiences = {
+                'menos-1': 'Menos de 1 año',
+                '1-3': '1-3 años exp.',
+                '3-5': '3-5 años exp.',
+                '5-10': '5-10 años exp.',
+                'mas-10': '+10 años exp.'
+            };
+            return experiences[exp] || 'Experiencia no especificada';
+        }
+
+        // Contactar trabajador
+        function contactWorker(phone) {
+            if (confirm(`¿Deseas contactar a este trabajador?\nTeléfono: ${phone}\n\nSerás redirigido a WhatsApp.`)) {
+                window.open(`https://wa.me/52${phone}`, '_blank');
+            }
+        }
+
+        // Actualizar estadísticas
+        function updateStats(workers) {
+            document.getElementById('totalWorkers').textContent = workers.length;
+            
+            if (workers.length > 0) {
+                const avgRating = workers.reduce((sum, worker) => sum + worker.valoracion, 0) / workers.length;
+                document.getElementById('averageRating').textContent = avgRating.toFixed(1);
+                
+                const totalServices = workers.reduce((sum, worker) => sum + worker.trabajosRealizados, 0);
+                document.getElementById('totalServices').textContent = totalServices;
+            }
+        }
+
+        // Aplicar filtros
+        function applyFilters() {
+            // Implementar lógica de filtrado aquí
+            alert('Funcionalidad de filtros en desarrollo');
+        }
+
+        // Cargar trabajadores al iniciar
+        document.addEventListener('DOMContentLoaded', loadWorkers);
+    </script>
+</body>
+</html>
