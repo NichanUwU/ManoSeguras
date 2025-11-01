@@ -298,62 +298,81 @@
     <!-- Footer -->
     <div id="footer"></div>
 
-    <script src="js/main.js"></script>
-    <script>
-        // Manejar la subida de fotos
-        document.getElementById('fotos').addEventListener('change', function(e) {
-            const previewContainer = document.getElementById('preview-container');
-            previewContainer.innerHTML = '';
-            
-            Array.from(e.target.files).forEach(file => {
-                if (file.type.startsWith('image/')) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        const img = document.createElement('img');
-                        img.src = e.target.result;
-                        img.style.width = '100px';
-                        img.style.height = '100px';
-                        img.style.objectFit = 'cover';
-                        img.style.borderRadius = '8px';
-                        img.style.marginRight = '10px';
-                        img.style.marginBottom = '10px';
-                        previewContainer.appendChild(img);
-                    }
-                    reader.readAsDataURL(file);
-                }
-            });
-        });
+    <script src="js/sheets-api.js"></script>
+<script>
+    // Probar conexión al cargar la página
+    document.addEventListener('DOMContentLoaded', async function() {
+        const connectionTest = await SheetsAPI.testConnection();
+        if (!connectionTest.success) {
+            console.warn('Modo offline: Los datos se guardarán localmente');
+        }
+    });
 
-        // Manejar el envío del formulario
-        document.getElementById('workerRegistrationForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Aquí iría la lógica para guardar en localStorage o enviar a un servidor
-            const formData = {
-                nombre: document.getElementById('nombre').value,
-                telefono: document.getElementById('telefono').value,
-                email: document.getElementById('email').value,
-                servicios: Array.from(document.querySelectorAll('input[name="servicios"]:checked')).map(cb => cb.value),
-                experiencia: document.getElementById('experiencia').value,
-                descripcion: document.getElementById('descripcion').value,
-                horario: document.getElementById('horario').value,
-                radio: document.getElementById('radio').value
-            };
-            
-            // Guardar en localStorage
-            let workers = JSON.parse(localStorage.getItem('manoseguras_workers') || '[]');
-            workers.push({
-                ...formData,
-                id: Date.now(),
-                fechaRegistro: new Date().toISOString(),
-                valoracion: 0,
-                trabajosRealizados: 0
-            });
-            localStorage.setItem('manoseguras_workers', JSON.stringify(workers));
-            
-            alert('¡Registro exitoso! Ahora aparecerás en nuestro listado de trabajadores.');
-            window.location.href = 'trabajadores.html';
+    // Manejar la subida de fotos (código existente)
+    document.getElementById('fotos').addEventListener('change', function(e) {
+        const previewContainer = document.getElementById('preview-container');
+        previewContainer.innerHTML = '';
+        
+        Array.from(e.target.files).forEach(file => {
+            if (file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.style.width = '100px';
+                    img.style.height = '100px';
+                    img.style.objectFit = 'cover';
+                    img.style.borderRadius = '8px';
+                    img.style.marginRight = '10px';
+                    img.style.marginBottom = '10px';
+                    previewContainer.appendChild(img);
+                }
+                reader.readAsDataURL(file);
+            }
         });
-    </script>
+    });
+
+    // Manejar el envío del formulario
+    document.getElementById('workerRegistrationForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        // Mostrar loading
+        const submitBtn = this.querySelector('.submit-btn');
+        const originalText = submitBtn.textContent;
+        submitBtn.textContent = 'Registrando...';
+        submitBtn.disabled = true;
+        
+        const formData = {
+            nombre: document.getElementById('nombre').value,
+            telefono: document.getElementById('telefono').value,
+            email: document.getElementById('email').value,
+            servicios: Array.from(document.querySelectorAll('input[name="servicios"]:checked')).map(cb => cb.value),
+            experiencia: document.getElementById('experiencia').value,
+            descripcion: document.getElementById('descripcion').value,
+            horario: document.getElementById('horario').value,
+            radio: document.getElementById('radio').value,
+            valoracion: 0,
+            trabajosRealizados: 0
+        };
+        
+        try {
+            const result = await SheetsAPI.saveWorker(formData);
+            
+            if (result.success) {
+                alert('¡Registro exitoso! Ahora aparecerás en nuestro listado de trabajadores.');
+                window.location.href = 'trabajadores.html';
+            } else {
+                alert('Error: ' + result.message);
+            }
+        } catch (error) {
+            console.error('Error en el registro:', error);
+            alert('Error al registrar. Por favor intenta nuevamente.');
+        } finally {
+            // Restaurar botón
+            submitBtn.textContent = originalText;
+            submitBtn.disabled = false;
+        }
+    });
+</script>
 </body>
 </html>
