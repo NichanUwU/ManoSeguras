@@ -1,66 +1,77 @@
-// Configuración - REEMPLAZA con tu URL de Apps Script
-const API_URL = 'https://script.google.com/macros/s/AKfycby3Ft7ZypdyIeqnyVlhPmR5HWrTQLQ4WrxY8qdvBhBvdB0CUNWP_zxZbiu3aafxJyNW7A/exec';
+// Configuración JSONBin.io - CREDENCIALES COMPLETAS
+const JSONBIN_BIN_ID = '69064896ae596e708f3d107c';
+const JSONBIN_MASTER_KEY = '$2a$10$sSJtWMrOWB0ji.mahbccs.yEsl7ZMu9Iun/D.fTR29gUyDgfNYomq';
 
-class SheetsAPI {
+class JSONBinAPI {
     // Guardar trabajador
     static async saveWorker(workerData) {
         try {
-            console.log('Guardando trabajador...', workerData);
+            console.log('Guardando trabajador en JSONBin...', workerData);
             
-            const response = await fetch(API_URL, {
-                method: 'POST',
+            // Primero obtener los trabajadores existentes
+            const workers = await this.getWorkers();
+            
+            // Agregar el nuevo trabajador
+            workerData.id = workerData.id || Date.now().toString();
+            workerData.fechaRegistro = new Date().toISOString();
+            workers.push(workerData);
+            
+            // Actualizar el bin completo
+            const response = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`, {
+                method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
+                    'X-Master-Key': JSONBIN_MASTER_KEY,
+                    'X-Bin-Versioning': 'false'
                 },
-                body: JSON.stringify({
-                    action: 'saveWorker',
-                    data: workerData
-                })
+                body: JSON.stringify(workers)
             });
             
             const result = await response.json();
-            console.log('Respuesta del servidor:', result);
+            console.log('Respuesta de JSONBin:', result);
             
-            if (result.success) {
-                SheetsAPI.updateLocalStorage(workerData);
+            if (response.ok) {
+                // Actualizar localStorage
+                localStorage.setItem('manoseguras_workers', JSON.stringify(workers));
+                return { success: true, message: 'Trabajador guardado exitosamente' };
+            } else {
+                throw new Error(result.message || 'Error guardando en JSONBin');
             }
             
-            return result;
         } catch (error) {
             console.error('Error guardando trabajador:', error);
-            return SheetsAPI.saveToLocalStorage(workerData);
+            // Fallback a localStorage
+            return this.saveToLocalStorage(workerData);
         }
     }
 
     // Obtener todos los trabajadores
     static async getWorkers() {
         try {
-            console.log('Obteniendo trabajadores...');
+            console.log('Obteniendo trabajadores de JSONBin...');
             
-            // Usar un proxy CORS si es necesario
-            const url = `${API_URL}?action=getWorkers&timestamp=${Date.now()}`;
-            const response = await fetch(url, {
-                method: 'GET',
-                mode: 'cors'
+            const response = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}/latest`, {
+                headers: {
+                    'X-Master-Key': JSONBIN_MASTER_KEY
+                }
             });
             
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            
             const result = await response.json();
-            console.log('Respuesta del servidor:', result);
+            console.log('Respuesta de JSONBin:', result);
             
-            if (result.success && result.workers) {
-                localStorage.setItem('manoseguras_workers', JSON.stringify(result.workers));
+            if (response.ok && result.record) {
+                const workers = Array.isArray(result.record) ? result.record : [];
+                localStorage.setItem('manoseguras_workers', JSON.stringify(workers));
                 localStorage.setItem('manoseguras_last_update', Date.now().toString());
-                return result.workers;
+                return workers;
             } else {
                 throw new Error(result.message || 'Error obteniendo trabajadores');
             }
+            
         } catch (error) {
             console.error('Error obteniendo trabajadores:', error);
-            return SheetsAPI.getFromLocalStorage();
+            // Fallback a localStorage
+            return this.getFromLocalStorage();
         }
     }
 
@@ -90,27 +101,22 @@ class SheetsAPI {
         }
     }
 
-    static updateLocalStorage(workerData) {
-        try {
-            let workers = JSON.parse(localStorage.getItem('manoseguras_workers') || '[]');
-            workerData.id = workerData.id || Date.now().toString();
-            workerData.fechaRegistro = new Date().toISOString();
-            workers.push(workerData);
-            localStorage.setItem('manoseguras_workers', JSON.stringify(workers));
-        } catch (error) {
-            console.error('Error actualizando localStorage:', error);
-        }
-    }
-
-    // Probar la conexión con la API
+    // Probar la conexión
     static async testConnection() {
         try {
-            const response = await fetch(`${API_URL}?action=test&timestamp=${Date.now()}`);
+            const response = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`, {
+                headers: {
+                    'X-Master-Key': JSONBIN_MASTER_KEY
+                }
+            });
             const result = await response.json();
-            return result;
+            return { success: response.ok, message: response.ok ? 'Conectado a JSONBin' : 'Error de conexión' };
         } catch (error) {
             console.error('Error probando conexión:', error);
             return { success: false, message: 'Sin conexión' };
         }
     }
 }
+
+// Para compatibilidad con tu código existente
+const SheetsAPI = JSONBinAPI;

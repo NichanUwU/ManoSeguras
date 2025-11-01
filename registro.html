@@ -302,13 +302,15 @@
 <script>
     // Probar conexión al cargar la página
     document.addEventListener('DOMContentLoaded', async function() {
-        const connectionTest = await SheetsAPI.testConnection();
-        if (!connectionTest.success) {
-            console.warn('Modo offline: Los datos se guardarán localmente');
+        const connectionTest = await JSONBinAPI.testConnection();
+        if (connectionTest.success) {
+            console.log('✅ Conectado a JSONBin.io');
+        } else {
+            console.warn('⚠️ Modo offline: Los datos se guardarán localmente');
         }
     });
 
-    // Manejar la subida de fotos (código existente)
+    // Manejar la subida de fotos
     document.getElementById('fotos').addEventListener('change', function(e) {
         const previewContainer = document.getElementById('preview-container');
         previewContainer.innerHTML = '';
@@ -356,7 +358,7 @@
         };
         
         try {
-            const result = await SheetsAPI.saveWorker(formData);
+            const result = await JSONBinAPI.saveWorker(formData);
             
             if (result.success) {
                 alert('¡Registro exitoso! Ahora aparecerás en nuestro listado de trabajadores.');
