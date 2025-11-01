@@ -22,14 +22,12 @@ class SheetsAPI {
             console.log('Respuesta del servidor:', result);
             
             if (result.success) {
-                // También guardar en localStorage como caché
                 SheetsAPI.updateLocalStorage(workerData);
             }
             
             return result;
         } catch (error) {
             console.error('Error guardando trabajador:', error);
-            // Fallback a localStorage
             return SheetsAPI.saveToLocalStorage(workerData);
         }
     }
@@ -39,13 +37,21 @@ class SheetsAPI {
         try {
             console.log('Obteniendo trabajadores...');
             
-            const response = await fetch(`${API_URL}?action=getWorkers&timestamp=${Date.now()}`);
-            const result = await response.json();
+            // Usar un proxy CORS si es necesario
+            const url = `${API_URL}?action=getWorkers&timestamp=${Date.now()}`;
+            const response = await fetch(url, {
+                method: 'GET',
+                mode: 'cors'
+            });
             
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const result = await response.json();
             console.log('Respuesta del servidor:', result);
             
             if (result.success && result.workers) {
-                // Guardar en localStorage como caché
                 localStorage.setItem('manoseguras_workers', JSON.stringify(result.workers));
                 localStorage.setItem('manoseguras_last_update', Date.now().toString());
                 return result.workers;
@@ -54,7 +60,6 @@ class SheetsAPI {
             }
         } catch (error) {
             console.error('Error obteniendo trabajadores:', error);
-            // Fallback a localStorage
             return SheetsAPI.getFromLocalStorage();
         }
     }
@@ -77,7 +82,7 @@ class SheetsAPI {
     static getFromLocalStorage() {
         try {
             const workers = JSON.parse(localStorage.getItem('manoseguras_workers') || '[]');
-            console.log('Datos obtenidos de localStorage:', workers);
+            console.log('Datos obtenidos de localStorage:', workers.length, 'trabajadores');
             return workers;
         } catch (error) {
             console.error('Error obteniendo datos locales:', error);

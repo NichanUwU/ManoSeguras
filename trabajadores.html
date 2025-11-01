@@ -332,6 +332,106 @@
     function applyFilters() {
         alert('Funcionalidad de filtros en desarrollo');
     }
+    // Actualizar estadísticas
+function updateStats(workers) {
+    const totalWorkers = document.getElementById('totalWorkers');
+    const averageRating = document.getElementById('averageRating');
+    const totalServices = document.getElementById('totalServices');
+    
+    if (totalWorkers) {
+        totalWorkers.textContent = workers.length;
+    }
+    
+    if (averageRating && workers.length > 0) {
+        const avgRating = workers.reduce((sum, worker) => sum + (worker.valoracion || 0), 0) / workers.length;
+        averageRating.textContent = avgRating.toFixed(1);
+    }
+    
+    if (totalServices && workers.length > 0) {
+        const totalServicesCount = workers.reduce((sum, worker) => sum + (worker.trabajosRealizados || 0), 0);
+        totalServices.textContent = totalServicesCount;
+    }
+}
+
+// Generar estrellas para valoración
+function generateStars(rating) {
+    const fullStars = Math.floor(rating);
+    const halfStar = rating % 1 >= 0.5;
+    const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
+    
+    return '★'.repeat(fullStars) + (halfStar ? '½' : '') + '☆'.repeat(emptyStars);
+}
+
+// Obtener texto de experiencia
+function getExperienceText(exp) {
+    const experiences = {
+        'menos-1': 'Menos de 1 año',
+        '1-3': '1-3 años exp.',
+        '3-5': '3-5 años exp.',
+        '5-10': '5-10 años exp.',
+        'mas-10': '+10 años exp.'
+    };
+    return experiences[exp] || 'Experiencia no especificada';
+}
+
+// Contactar trabajador
+function contactWorker(phone) {
+    if (confirm(`¿Deseas contactar a este trabajador?\nTeléfono: ${phone}\n\nSerás redirigido a WhatsApp.`)) {
+        window.open(`https://wa.me/52${phone}`, '_blank');
+    }
+}
+
+// Crear tarjeta de trabajador
+function createWorkerCard(worker) {
+    const card = document.createElement('div');
+    card.className = 'worker-card';
+    
+    // Obtener iniciales para el avatar
+    const initials = worker.nombre.split(' ').map(n => n[0]).join('').toUpperCase();
+    
+    // Mapear servicios a nombres legibles
+    const serviceNames = {
+        'fontaneria': 'Fontanería',
+        'electricidad': 'Electricidad',
+        'carpinteria': 'Carpintería',
+        'albanileria': 'Albañilería',
+        'jardineria': 'Jardinería',
+        'limpieza': 'Limpieza',
+        'clases': 'Clases',
+        'reparaciones': 'Reparaciones'
+    };
+    
+    card.innerHTML = `
+        <div class="worker-header">
+            <div class="worker-avatar">${initials}</div>
+            <div class="worker-name">${worker.nombre}</div>
+            <div class="worker-rating">
+                ${generateStars(worker.valoracion)}
+                <span>(${worker.valoracion})</span>
+            </div>
+        </div>
+        <div class="worker-body">
+            <div class="worker-services">
+                ${worker.servicios.map(service => 
+                    `<span class="service-tag">${serviceNames[service] || service}</span>`
+                ).join('')}
+            </div>
+            <div class="worker-info">
+                <div class="info-item">📞 ${worker.telefono}</div>
+                <div class="info-item">⏰ ${worker.horario || 'Horario flexible'}</div>
+                <div class="info-item">📍 Radio de ${worker.radio} km</div>
+                <div class="info-item">⭐ ${worker.trabajosRealizados} trabajos realizados</div>
+            </div>
+            <div class="worker-description">${worker.descripcion}</div>
+        </div>
+        <div class="worker-footer">
+            <span>${getExperienceText(worker.experiencia)}</span>
+            <button class="btn" onclick="contactWorker('${worker.telefono}')">Contactar</button>
+        </div>
+    `;
+    
+    return card;
+}
     </script>
 </body>
 </html>
