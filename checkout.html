@@ -415,9 +415,9 @@
         // Cargar detalles del servicio desde URL parameters
         function loadServiceDetails() {
             const urlParams = new URLSearchParams(window.location.search);
-            const service = urlParams.get('service') || 'Instalación Eléctrica';
-            const worker = urlParams.get('worker') || 'MANUEL ALBORES CHIRINOS';
-            const price = urlParams.get('price') || '450';
+            const service = urlParams.get('service') || 'Reparto';
+            const worker = urlParams.get('worker') || 'Daniel de Jesús Hernández Vázquez';
+            const price = urlParams.get('price') || '30';
 
             document.getElementById('serviceTitle').textContent = service;
             document.getElementById('serviceProvider').textContent = `Con ${worker}`;
