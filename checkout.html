@@ -220,7 +220,7 @@
                         <h3 id="serviceTitle">Reparto</h3>
                         <p id="serviceProvider">Con Daniel de Jesús Hernández Vázquez</p>
                         <p id="serviceDate">📅 Para el: <span id="selectedDate">8 de Noviembre, 2025</span></p>
-                        <p id="serviceTime">⏰ Hora: <span id="selectedTime">11:25 PM</span></p>
+                        <p id="serviceTime">⏰ Hora: <span id="selectedTime">11:30 PM</span></p>
                     </div>
 
                     <!-- Información de Contacto -->
@@ -415,9 +415,9 @@
         // Cargar detalles del servicio desde URL parameters
         function loadServiceDetails() {
             const urlParams = new URLSearchParams(window.location.search);
-            const service = urlParams.get('service') || 'Reparto';
-            const worker = urlParams.get('worker') || 'Daniel de Jesús Hernández Vázquez';
-            const price = urlParams.get('price') || '30';
+            const service = urlParams.get('service') || 'Instalación Eléctrica';
+            const worker = urlParams.get('worker') || 'MANUEL ALBORES CHIRINOS';
+            const price = urlParams.get('price') || '450';
 
             document.getElementById('serviceTitle').textContent = service;
             document.getElementById('serviceProvider').textContent = `Con ${worker}`;

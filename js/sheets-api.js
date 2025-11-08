@@ -118,5 +118,34 @@ class JSONBinAPI {
     }
 }
 
+// Trabajadores de demostración para la expo
+const trabajadoresExpo = [
+    {
+        id: "expo1",
+        nombre: "Daniel de Jesús Hernández Vázquez",
+        telefono: "9656597890",
+        servicios: ["Pasajes", "Mandados", "Envíos"],
+        descripcion: "Servicios de pasajes, mandados y envíos. De lunes a domingo, radio de servicio en todo km.",
+        valoracion: 4.5,
+        experiencia: "0 trabajos realizados",
+        horario: "De Lunes a Domingo",
+        radio: "Radio de todo km",
+        precio: 50,
+        tipo: "delivery"
+    },
+    {
+        id: "expo2",
+        nombre: "Manuel Albores Chirinos",
+        telefono: "9651432166", 
+        servicios: ["Electricidad", "Instalaciones Eléctricas", "Reparaciones"],
+        descripcion: "TÉCNICO ELECTRICISTA CON MÁS DE 5 AÑOS DE EXPERIENCIA. Especialista en reparaciones urgentes.",
+        valoracion: 4.8,
+        experiencia: "5+ años de experiencia",
+        horario: "Horario flexible",
+        radio: "Radio de 10 km",
+        precio: 200,
+        tipo: "electricista"
+    }
+];
 // Para compatibilidad con tu código existente
 const SheetsAPI = JSONBinAPI;
