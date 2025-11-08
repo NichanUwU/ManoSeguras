@@ -412,6 +412,22 @@
             document.getElementById('serviceProvider').textContent = `Con ${worker}`;
             document.getElementById('totalAmount').textContent = price;
             servicePrice = parseInt(price);
+        // Cargar detalles del servicio desde URL parameters
+        function loadServiceDetails() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const service = urlParams.get('service') || 'Instalación Eléctrica';
+            const worker = urlParams.get('worker') || 'MANUEL ALBORES CHIRINOS';
+            const price = urlParams.get('price') || '450';
+
+            document.getElementById('serviceTitle').textContent = service;
+            document.getElementById('serviceProvider').textContent = `Con ${worker}`;
+            document.getElementById('totalAmount').textContent = price;
+            servicePrice = parseInt(price);
+    
+        // Actualizar también el número de servicio
+            document.getElementById('serviceNumber').textContent = 
+                Math.floor(1000 + Math.random() * 9000);
+}
         }
 
         // Inicializar checkout
