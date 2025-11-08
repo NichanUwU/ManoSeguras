@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Administrar Trabajadores - ManoSeguras</title>
+    <title>Administrar Trabajadores - MercadoSeguro</title>
     <style>
         .admin-container { max-width: 1000px; margin: 2rem auto; padding: 0 1rem; }
         .worker-item { 
@@ -127,7 +127,7 @@
                     alert('Cambios guardados exitosamente');
                     toggleEditForm(index);
                     // Actualizar localStorage
-                    localStorage.setItem('manoseguras_workers', JSON.stringify(allWorkers));
+                    localStorage.setItem('MercadoSeguro_workers', JSON.stringify(allWorkers));
                 } else {
                     throw new Error('Error guardando cambios');
                 }
